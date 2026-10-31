@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DataView · Inteligência Comercial</title>
+<meta name="description" content="DataView: painel de inteligência comercial com projeções, segmentação de clientes (RFM), curva ABC e alertas de estoque. Dados fictícios para demonstração.">
+<meta name="theme-color" content="#26375a">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<link rel="shortcut icon" href="img/favicon.ico">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<meta property="og:type" content="website"><meta property="og:title" content="DataView · Inteligência Comercial">
+<meta property="og:description" content="Painel analítico de vendas com projeções, RFM, curva ABC e alertas de estoque (dados fictícios).">
+<meta property="og:image" content="img/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Logotipo do DataView">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="img/og.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<section id="login">
+  <aside class="hero">
+    <div class="logo"><img src="img/logo.png" alt="DataView"></div>
+    <h2>Inteligência comercial para decisões mais rápidas.</h2>
+    <p>Receita, clientes e estoque em um único painel, com projeções, alertas e segmentações que apontam onde agir primeiro.</p>
+    <ul class="feat"><li>Projeção de receita e detecção de dias atípicos</li><li>Segmentação de clientes (RFM) e curva ABC</li><li>Cobertura de estoque com alerta de reposição</li><li>Perfis por cargo, gestão de dados e auditoria</li></ul>
+    <small>© 2026 DataView Analytics Ltda. · Ambiente de demonstração com dados fictícios</small>
+  </aside>
+  <div class="pane">
+    <form id="lf" novalidate>
+      <img class="mb" src="img/icon.png" alt="DataView">
+      <h1>Acesse sua conta</h1>
+      <p class="muted">Entre com suas credenciais corporativas.</p>
+      <label>E-mail corporativo<input name="u" type="email" autocomplete="username" placeholder="nome.sobrenome@empresa.com.br"></label>
+      <label>Senha<input name="p" type="password" autocomplete="current-password" placeholder="Digite sua senha"></label>
+      <a href="#" id="fp" class="fp">Esqueceu a senha?</a>
+      <p id="lerr" role="alert" hidden></p>
+      <button type="submit">Entrar</button>
+      <div class="demo"><h3>Contas de demonstração</h3><p class="muted">Selecione um perfil para preencher o acesso automaticamente.</p><ul id="creds"></ul></div>
+    </form>
+  </div>
+</section>
+<div id="app" hidden>
+  <aside class="sidebar"><div class="logoside"><img src="img/icon-light.png" alt="DataView"></div><nav id="nav"></nav><button id="out" class="ghost" title="Sair">⏻</button></aside>
+  <main>
+    <header>
+      <div><h1 id="title">DataView</h1><p class="muted" id="who"></p></div>
+      <form id="filters" novalidate>
+        <label>De <input type="date" name="start"></label>
+        <label>Até <input type="date" name="end"></label>
+        <label>Categoria <select name="category"><option value="">Todas</option></select></label>
+        <label>Região <select name="region"><option value="">Todas</option></select></label>
+        <label>Canal <select name="channel"><option value="">Todos</option></select></label>
+        <button type="submit">Aplicar</button>
+        <button type="button" id="reset" class="ghost">Limpar</button>
+        <button type="button" class="ghost" data-p="30">30 dias</button>
+        <button type="button" class="ghost" data-p="90">90 dias</button>
+        <button type="button" class="ghost" data-p="180">6 meses</button>
+        <button type="button" class="ghost" data-p="365">12 meses</button>
+        <button type="button" id="export">Exportar CSV</button>
+      </form>
+    </header>
+    <p id="msg" role="alert" hidden></p>
+    <section data-view="geral">
+      <div class="kpis" id="kpis"></div>
+      <div class="grid">
+        <article class="card wide"><h2>Receita mensal e projeção</h2><p class="muted" id="fc-note"></p><div class="chart"><canvas id="c-month"></canvas></div></article>
+        <article class="card"><h2>Receita por canal</h2><div class="chart"><canvas id="c-ch"></canvas></div></article>
+        <article class="card"><h2>Receita por região</h2><div class="chart"><canvas id="c-reg"></canvas></div></article>
+        <article class="card"><h2>Insights automáticos</h2><ul id="ins"></ul></article>
+        <article class="card"><h2>Dias atípicos (z-score)</h2><div class="scroll"><table id="t-an"></table></div></article>
+      </div>
+    </section>
+    <section data-view="clientes" hidden>
+      <div class="grid">
+        <article class="card"><h2>Segmentação RFM</h2><div class="chart"><canvas id="c-rfm"></canvas></div></article>
+        <article class="card"><h2>Receita por estado</h2><div class="chart"><canvas id="c-uf"></canvas></div></article>
+        <article class="card"><h2>Segmentos</h2><div class="scroll"><table id="t-rfm"></table></div></article>
+        <article class="card"><h2>Maiores clientes</h2><div class="scroll"><table id="t-cli"></table></div></article>
+      </div>
+    </section>
+    <section data-view="produtos" hidden>
+      <div class="grid">
+        <article class="card wide"><h2>Curva ABC (Pareto)</h2><div class="chart"><canvas id="c-abc"></canvas></div></article>
+        <article class="card wide"><h2>Desempenho e estoque</h2><div class="scroll"><table id="t-prod"></table></div></article>
+      </div>
+    </section>
+    <section data-view="dados" hidden>
+      <p class="muted" id="d-count"></p>
+      <div class="grid">
+        <article class="card"><h2>Lançar pedido</h2>
+          <form id="fo" class="fgrid" novalidate>
+            <label>Data<input type="date" name="date" min="2025-01-01" max="2027-12-31"></label>
+            <label>Produto<select name="prod"></select></label>
+            <label>Quantidade<input type="number" name="qty" min="1" step="1" value="1"></label>
+            <label>Preço unitário (R$)<input type="number" name="price" min="0.01" step="0.01"></label>
+            <label>Cliente<input name="cli" list="dl-cli" placeholder="Digite ou escolha" autocomplete="off"></label>
+            <label>UF (se novo cliente)<select name="uf"></select></label>
+            <label>Canal<select name="ch"></select></label>
+            <label>Pagamento<select name="pay"><option>Pix</option><option>Cartão</option><option>Boleto</option></select></label>
+            <label>Status<select name="st"><option>Entregue</option><option>Cancelado</option><option>Devolvido</option></select></label>
+            <label>Prazo de entrega (dias)<input type="number" name="dl" min="1" max="60" value="3"></label>
+            <label>Nota 0 a 10 (opcional)<input type="number" name="nps" min="0" max="10"></label>
+            <datalist id="dl-cli"></datalist>
+            <button type="submit">Lançar pedido</button>
+          </form><p id="fo-msg" class="fmsg" role="status"></p></article>
+        <article class="card"><h2>Cadastrar produto</h2>
+          <form id="fprod" class="fgrid" novalidate>
+            <label>Nome<input name="name" autocomplete="off"></label>
+            <label>Categoria<select name="cat"></select></label>
+            <label>Preço de venda (R$)<input type="number" name="price" min="0.01" step="0.01"></label>
+            <label>Custo (R$)<input type="number" name="cost" min="0" step="0.01"></label>
+            <label>Estoque inicial<input type="number" name="stock" min="0" step="1" value="0"></label>
+            <button type="submit">Cadastrar</button>
+          </form><p id="fprod-msg" class="fmsg" role="status"></p>
+          <h2 class="sp">Base de dados</h2><p class="muted">As alterações ficam salvas neste navegador.</p>
+          <button type="button" id="d-reset" class="ghost">Restaurar dados originais</button></article>
+        <article class="card wide"><h2>Últimos lançamentos</h2><div class="scroll"><table id="t-rec"></table></div></article>
+      </div>
+    </section>
+    <section data-view="admin" hidden>
+      <div class="grid">
+        <article class="card"><h2>Usuários e perfis</h2><div class="scroll"><table id="t-users"></table></div></article>
+        <article class="card"><h2>Registro de auditoria</h2><div class="scroll"><table id="t-log"></table></div></article>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="vendor/chart.umd.js"></script>
+<script src="js/data.js"></script>
+<script src="js/calc.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
