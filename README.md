@@ -37,9 +37,3 @@ vendor/           Chart.js (local, funciona offline)
 ```
 
 > Todos os nomes de pessoas (usuários e clientes) são fictícios.
-
-## Como publicar no GitHub Pages
-
-1. Envie os arquivos para um repositório.
-2. Em **Settings → Pages**, escolha a branch `main` e a pasta `/ (root)`.
-3. O site ficará em `https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/`.
