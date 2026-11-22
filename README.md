@@ -1,9 +1,9 @@
 # DataView · Inteligência Comercial
 
-**DataView** é o nome da plataforma de análise comercial. **Vende+** é a loja fictícia cujos dados são utilizados nesta demonstração. O logotipo, o favicon e a identidade do site pertencem ao DataView; Vende+ identifica somente a loja analisada.
+**DataView** é o nome da plataforma de análise comercial. **Vende+** é a loja fictícia cujos dados são utilizados nesta demonstração. O logotipo, o favicon e a identidade do site pertencem ao DataView.
 
-Dashboard analítico de vendas (loja fictícia **Nova Loja**, de jan/2025 a out/2026) em HTML, CSS e JavaScript puro, com Chart.js.
-Funciona sem servidor e sem instalação: basta abrir o `index.html`.
+Dashboard analítico de vendas (loja fictícia **Vende+**, de jan/2025 a out/2026) em HTML, CSS e JavaScript puro, com Chart.js.
+Funciona sem servidor e sem instalação: basta abrir o `index.html` ou acessar o site (https://data-view.htmly.com.br/).
 
 ## Acessos de demonstração
 
@@ -13,7 +13,7 @@ Funciona sem servidor e sem instalação: basta abrir o `index.html`.
 | Analista de Dados Sênior | otavio.fontes@dataview.com.br | Dados@2026 | Painéis, exportação e **gestão de dados** (adicionar e remover) |
 | Gerente de TI e Governança | renata.sampaio@dataview.com.br | TI@2026 | Painéis, usuários e registro de auditoria |
 
-> A autenticação é **apenas demonstrativa**, feita no navegador. Em um sistema real, ela deve ficar em um backend.
+> A autenticação é **apenas demonstrativa**, feita no navegador. Em um sistema real, ela fica em um backend.
 
 ## O que o projeto entrega
 
@@ -58,18 +58,11 @@ Exemplos rápidos:
 - **Mudar as cores da marca:** edite as variáveis da seção 1 do `css/style.css` e a lista `COLORS` do `js/app.js`.
 - **Mudar o período dos dados:** ajuste as datas do laço de pedidos na seção 4 do `js/data.js`.
 
-## Como publicar no GitHub Pages
-
-1. Envie os arquivos para um repositório.
-2. Em **Settings → Pages**, escolha a branch `main` e a pasta `/ (root)`.
-3. O site ficará em `https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/`.
-
-
 ## Guia de manutenção
 
 O projeto não exige compilação, dependências instaladas ou um servidor de aplicação. Os arquivos são carregados diretamente pelo navegador, na ordem indicada em `index.html`:
 
-1. `vendor/chart.umd.js`: biblioteca Chart.js distribuída localmente (código de terceiros).
+1. `vendor/chart.umd.js`: biblioteca Chart.js distribuída localmente.
 2. `js/data.js`: geração e recomputação dos dados fictícios.
 3. `js/calc.js`: cálculos independentes da interface.
 4. `js/app.js`: interação com o DOM, gráficos e armazenamento local.
@@ -79,15 +72,8 @@ O projeto não exige compilação, dependências instaladas ou um servidor de ap
 - **HTML:** identação hierárquica e comentários apenas para identificar regiões da página.
 - **CSS:** regras agrupadas por tema, componente e responsividade; a ordem da cascata é preservada.
 - **JavaScript:** seções por responsabilidade e comentários curtos para funções analíticas e operações de estado.
-- **Bibliotecas:** não edite `vendor/chart.umd.js` para não dificultar atualizações ou comprometer o código de terceiros.
-- **Dados:** não altere a ordem das chamadas ao gerador pseudoaleatório em `js/data.js` sem desejar mudar os números da demonstração.
+- **Bibliotecas:** não edite `vendor/chart.umd.js` para não comprometer o código.
+- **Dados:** não altere a ordem das chamadas ao gerador pseudoaleatório em `js/data.js` sem desejar mudar os números da demonstração para teste.
 
-### Verificações antes de publicar
-
-- Abra `index.html` e teste o acesso com os três perfis de demonstração.
-- Confira navegação, filtros, gráficos, exportação CSV e alternância de tema.
-- No perfil de analista, teste inclusão, exclusão e restauração dos dados.
-- Confira a apresentação em telas estreitas e largas.
-- O `og:image` deve usar uma **URL HTTPS absoluta** depois da publicação (por exemplo, a URL pública do arquivo `img/og.png` no GitHub Pages); caminhos relativos podem não funcionar em redes sociais.
 
 > **Segurança:** usuários e senhas de demonstração aparecem no código-fonte; `localStorage` não é banco de dados nem mecanismo seguro de autenticação. Não utilize esta implementação para armazenar dados pessoais ou controlar acessos reais.
