@@ -2,7 +2,8 @@
 
 /* ==========================================================================
    1. VARIÁVEIS DE TEMA
-   Cores da marca e tokens de claro/escuro. (padding: respeita as áreas seguras do celular)
+   Cores da marca e tokens de claro/escuro. Para mudar a identidade visual,
+   edite os valores abaixo. (padding: respeita as áreas seguras do celular)
    ========================================================================== */
 :root {
   --bg: #f4f5fb;
