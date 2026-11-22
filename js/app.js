@@ -11,9 +11,21 @@ const ICON = { geral: "▦", clientes: "☺", produtos: "☰", dados: "✎", adm
 const USERS = [
   { u: "cecilia.brandao@dataview.com.br", p: "Diretoria@2026", n: "Cecília Albuquerque Brandão", role: "Diretora Comercial", desc: "Painéis e exportação de relatórios", views: ["geral", "clientes", "produtos"], csv: true },
   { u: "otavio.fontes@dataview.com.br", p: "Dados@2026", n: "Otávio Nakamura Fontes", role: "Analista de Dados Sênior", desc: "Painéis, exportação e gestão de dados (adicionar e remover)", views: ["geral", "clientes", "produtos", "dados"], csv: true, edit: true },
-  { u: "renata.sampaio@dataview.com.br", p: "TI@2026", n: "Renata Pimentel Sampaio", role: "Gerente de TI e Governança", desc: "Painéis, usuários e registro de auditoria", views: ["geral", "clientes", "produtos", "admin"], csv: true },
-  { u: "banca@dataview.com.br", p: "Banca@2026", n: "Convidado Banca Avaliadora", role: "Avaliador convidado", desc: "Somente leitura, sem exportação", views: ["geral", "clientes", "produtos"], csv: false }
+  { u: "renata.sampaio@dataview.com.br", p: "TI@2026", n: "Renata Pimentel Sampaio", role: "Gerente de TI e Governança", desc: "Painéis, usuários e registro de auditoria", views: ["geral", "clientes", "produtos", "admin"], csv: true }
 ];
+/* Avatares anônimos */
+const AVATARS = [["#26375a", "#5b78e0", "long"], ["#2a8f99", "#5b78e0", "short"], ["#6a55c4", "#26375a", "bun"]];
+function avatar(i) {
+  const [c1, c2, h] = AVATARS[i % AVATARS.length], hr = "#1c2a47";
+  const back = h === "long" ? `<path d="M31 46c0-19 8-29 19-29s19 10 19 29v26H31z" fill="${hr}"/>` : h === "bun" ? `<circle cx="50" cy="17" r="8" fill="${hr}"/>` : "";
+  const front = h === "long" ? `<path d="M35 40c2-9 8-14 15-14s13 5 15 14c-6-4-10-5-15-5s-9 1-15 5z" fill="${hr}"/>` :
+    h === "short" ? `<path d="M34 41c0-13 7-20 16-20s16 7 16 20c-5-6-10-8-16-8s-11 2-16 8z" fill="${hr}"/>` : `<path d="M34 42c0-14 7-21 16-21s16 7 16 21c-5-6-10-8-16-8s-11 2-16 8z" fill="${hr}"/>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs>` +
+    `<rect width="100" height="100" fill="url(#g)"/><circle cx="82" cy="18" r="22" fill="#fff" opacity=".08"/>${back}<path d="M10 100c3-21 17-31 40-31s37 10 40 31z" fill="#e4e9f8"/>` +
+    `<rect x="44" y="52" width="12" height="14" rx="5" fill="#d3daf0"/><ellipse cx="50" cy="43" rx="14" ry="16" fill="#eef1fb"/>${front}</svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+USERS.forEach((u, i) => { u.photo = avatar(i); });
 const form = $("#filters"), charts = {}; let user = null, view = "geral";
 
 const store = { get: (k) => { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
@@ -28,7 +40,8 @@ function tbl(sel, head, rows) {
   const b = t.createTBody();
   rows.forEach((r) => { const tr = b.insertRow(); r.forEach((c) => { const td = tr.insertCell();
     if (c && c.b) { const s = document.createElement("span"); s.className = "b " + c.c; s.textContent = c.b; td.appendChild(s); }
-    else if (c && c.btn) { const k = document.createElement("button"); k.type = "button"; k.className = "sm danger"; k.textContent = c.btn; k.addEventListener("click", c.fn); td.appendChild(k); } else td.textContent = c; }); });
+    else if (c && c.btn) { const k = document.createElement("button"); k.type = "button"; k.className = "sm danger"; k.textContent = c.btn; k.addEventListener("click", c.fn); td.appendChild(k); }
+    else if (c && c.img) { const m = new Image(); m.className = "me"; m.alt = ""; m.src = c.img; td.append(m, c.t); } else td.textContent = c; }); });
 }
 function draw(id, cfg) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart($("#" + id), cfg); }
 const showError = (t) => { $("#msg").textContent = t || ""; $("#msg").hidden = !t; };
@@ -75,7 +88,7 @@ function render() {
       { b: Math.round(x.cover) + " dias" + (x.cover < 12 ? " · reposição" : ""), c: x.cover < 12 ? "bad" : "ok" }]));
   } else if (view === "dados") { renderDados();
   } else if (view === "admin") {
-    tbl("#t-users", ["Usuário", "Nome", "Cargo", "Acesso"], USERS.map((x) => [x.u, x.n, x.role, x.desc]));
+    tbl("#t-users", ["Usuário", "Nome", "Cargo", "Acesso"], USERS.map((x) => [{ img: x.photo, t: x.u }, x.n, x.role, x.desc]));
     tbl("#t-log", ["Data e hora", "Usuário", "Ação"], logs.concat(D.audit.slice().reverse()).slice(0, 12));
   }
 }
@@ -150,13 +163,13 @@ function go(v) {
 }
 function start(u) {
   user = u; store.set("dv_user", u.u); $("#login").hidden = true; $("#app").hidden = false;
-  $("#who").textContent = u.n + " · " + u.role; $("#export").hidden = !u.csv;
+  $("#who").replaceChildren(Object.assign(new Image(), { src: u.photo, className: "me", alt: "" }), document.createTextNode(u.n + " · " + u.role)); $("#export").hidden = !u.csv;
   $("#nav").replaceChildren(...u.views.map((v) => { const b = document.createElement("button"); b.dataset.v = v; b.title = VIEWS[v]; b.textContent = ICON[v];
     b.addEventListener("click", () => go(v)); return b; }));
   log("Login"); setRange(180, true); go("geral");
 }
-$("#creds").replaceChildren(...USERS.map((u) => { const li = document.createElement("li"), b = document.createElement("button"), av = document.createElement("span"), t = document.createElement("span");
-  b.type = "button"; av.className = "av"; av.textContent = u.n.split(" ").filter((x) => x.length > 2).slice(0, 2).map((x) => x[0]).join("");
+$("#creds").replaceChildren(...USERS.map((u) => { const li = document.createElement("li"), b = document.createElement("button"), av = new Image(), t = document.createElement("span");
+  b.type = "button"; av.className = "av"; av.alt = ""; av.src = u.photo;
   t.innerHTML = "<b></b><small></small><small></small>"; t.children[0].textContent = u.n + " · " + u.role; t.children[1].textContent = u.u + "  |  senha: " + u.p; t.children[2].textContent = u.desc;
   b.append(av, t); b.addEventListener("click", () => { $("#lf").u.value = u.u; $("#lf").p.value = u.p; $("#lerr").hidden = true; }); li.appendChild(b); return li; }));
 $("#fp").addEventListener("click", (e) => { e.preventDefault(); $("#lerr").textContent = "Ambiente de demonstração: use uma das contas listadas abaixo."; $("#lerr").hidden = false; });
