@@ -1,7 +1,5 @@
 # DataView · Inteligência Comercial
 
-**DataView** é o nome da plataforma de análise comercial. **Vende+** é a loja fictícia cujos dados são utilizados nesta demonstração. O logotipo, o favicon e a identidade do site pertencem ao DataView.
-
 Dashboard analítico de vendas (loja fictícia **Vende+**, de jan/2025 a out/2026) em HTML, CSS e JavaScript puro, com Chart.js.
 Funciona sem servidor e sem instalação: basta abrir o `index.html` ou acessar o site (https://data-view.htmly.com.br/).
 
