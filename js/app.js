@@ -41,7 +41,7 @@ const money = { ticks: { callback: (v) => "R$ " + num(v / 1000) + "k" } };
 
 /* ----------------------------------------------------------------------------
    3. USUÁRIOS E PERMISSÕES
-   Autenticação apenas DEMONSTRATIVA, feita no navegador (as senhas ficam
+   ATENÇÃO: autenticação apenas DEMONSTRATIVA, feita no navegador (as senhas ficam
    visíveis no código). Em um sistema real, o login deve ser feito em um backend.
 
    Campos: u = e-mail · p = senha · n = nome · role = cargo · desc = o que pode fazer
