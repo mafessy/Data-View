@@ -21,7 +21,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,
 #creds{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:8px}
 #creds button{width:100%;display:flex;gap:12px;align-items:center;text-align:left;background:var(--bg);color:var(--ink);border:1px solid var(--line);padding:10px 12px}
 #creds button:hover{border-color:var(--purple)}
-.av{width:36px;height:36px;border-radius:50%;background:var(--purple);color:#fff;display:grid;place-items:center;font-weight:600;font-size:13px;flex:none}
+.av{width:42px;height:42px;border-radius:50%;flex:none;object-fit:cover}
+.me{width:26px;height:26px;border-radius:50%;vertical-align:middle;margin-right:8px;object-fit:cover}
 #creds b{display:block;font-size:14px}#creds small{display:block;color:var(--muted);font-size:12px;margin-top:2px;word-break:break-all}
 @media(max-width:860px){#login{grid-template-columns:1fr}.hero{display:none}.mb{display:block}}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .mb{filter:invert(1) hue-rotate(180deg)}}
