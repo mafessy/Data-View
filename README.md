@@ -1,5 +1,7 @@
 # DataView · Inteligência Comercial
 
+**DataView** é o nome da plataforma de análise comercial. **Vende+** é a loja fictícia cujos dados são utilizados nesta demonstração. O logotipo, o favicon e a identidade do site pertencem ao DataView; Vende+ identifica somente a loja analisada.
+
 Dashboard analítico de vendas (loja fictícia **Nova Loja**, de jan/2025 a out/2026) em HTML, CSS e JavaScript puro, com Chart.js.
 Funciona sem servidor e sem instalação: basta abrir o `index.html`.
 
@@ -10,7 +12,6 @@ Funciona sem servidor e sem instalação: basta abrir o `index.html`.
 | Diretora Comercial | cecilia.brandao@dataview.com.br | Diretoria@2026 | Painéis e exportação de relatórios |
 | Analista de Dados Sênior | otavio.fontes@dataview.com.br | Dados@2026 | Painéis, exportação e **gestão de dados** (adicionar e remover) |
 | Gerente de TI e Governança | renata.sampaio@dataview.com.br | TI@2026 | Painéis, usuários e registro de auditoria |
-| Avaliador convidado | banca@dataview.com.br | Banca@2026 | Somente leitura, sem exportação |
 
 > A autenticação é **apenas demonstrativa**, feita no navegador. Em um sistema real, ela deve ficar em um backend.
 
@@ -21,6 +22,7 @@ Funciona sem servidor e sem instalação: basta abrir o `index.html`.
 - **Clientes:** segmentação **RFM**, receita por estado e maiores clientes (nomes fictícios).
 - **Produtos:** **curva ABC (Pareto)**, margem e **cobertura de estoque** com alerta de reposição.
 - **Gestão de dados** (apenas perfil de analista de dados): lançar pedidos, cadastrar produtos e remover lançamentos, com validação. Tudo é recalculado em tempo real e fica salvo no navegador (`localStorage`); há botão para restaurar a base original.
+- **Avatares anônimos** (ilustrações em silhueta, sem fotos de pessoas reais) nas contas de demonstração, no cabeçalho e na tela de administração.
 - **Administração** (apenas TI): usuários, perfis e registro de auditoria.
 - Filtros por período, categoria, região e canal, atalhos de 30 dias a 12 meses, exportação CSV e tema claro/escuro automático.
 
@@ -37,3 +39,55 @@ vendor/           Chart.js (local, funciona offline)
 ```
 
 > Todos os nomes de pessoas (usuários e clientes) são fictícios.
+
+## Como o código está organizado
+
+Cada arquivo é dividido em seções numeradas e comentadas.
+
+| Arquivo | Para que serve | Onde mexer para... |
+|---|---|---|
+| `js/data.js` | Gera os dados fictícios (semente fixa) | mudar produtos, estados, eventos, sazonalidade ou o período |
+| `js/calc.js` | Cálculos: KPIs, projeção, anomalias, RFM, curva ABC, insights | alterar uma regra de análise |
+| `js/app.js` | Interface: usuários e permissões, telas, gestão de dados, login | adicionar um usuário ou uma tela |
+| `css/style.css` | Visual em 10 seções (cores da marca no início) | mudar cores e layout |
+| `index.html` | Estrutura da página, comentada por tela | adicionar um bloco na tela |
+
+Exemplos rápidos:
+
+- **Novo usuário:** acrescente um item em `USERS` no `js/app.js` (seção 3). O campo `views` define as telas liberadas; `edit: true` libera a gestão de dados.
+- **Mudar as cores da marca:** edite as variáveis da seção 1 do `css/style.css` e a lista `COLORS` do `js/app.js`.
+- **Mudar o período dos dados:** ajuste as datas do laço de pedidos na seção 4 do `js/data.js`.
+
+## Como publicar no GitHub Pages
+
+1. Envie os arquivos para um repositório.
+2. Em **Settings → Pages**, escolha a branch `main` e a pasta `/ (root)`.
+3. O site ficará em `https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/`.
+
+
+## Guia de manutenção
+
+O projeto não exige compilação, dependências instaladas ou um servidor de aplicação. Os arquivos são carregados diretamente pelo navegador, na ordem indicada em `index.html`:
+
+1. `vendor/chart.umd.js`: biblioteca Chart.js distribuída localmente (código de terceiros).
+2. `js/data.js`: geração e recomputação dos dados fictícios.
+3. `js/calc.js`: cálculos independentes da interface.
+4. `js/app.js`: interação com o DOM, gráficos e armazenamento local.
+
+### Convenções
+
+- **HTML:** identação hierárquica e comentários apenas para identificar regiões da página.
+- **CSS:** regras agrupadas por tema, componente e responsividade; a ordem da cascata é preservada.
+- **JavaScript:** seções por responsabilidade e comentários curtos para funções analíticas e operações de estado.
+- **Bibliotecas:** não edite `vendor/chart.umd.js` para não dificultar atualizações ou comprometer o código de terceiros.
+- **Dados:** não altere a ordem das chamadas ao gerador pseudoaleatório em `js/data.js` sem desejar mudar os números da demonstração.
+
+### Verificações antes de publicar
+
+- Abra `index.html` e teste o acesso com os três perfis de demonstração.
+- Confira navegação, filtros, gráficos, exportação CSV e alternância de tema.
+- No perfil de analista, teste inclusão, exclusão e restauração dos dados.
+- Confira a apresentação em telas estreitas e largas.
+- O `og:image` deve usar uma **URL HTTPS absoluta** depois da publicação (por exemplo, a URL pública do arquivo `img/og.png` no GitHub Pages); caminhos relativos podem não funcionar em redes sociais.
+
+> **Segurança:** usuários e senhas de demonstração aparecem no código-fonte; `localStorage` não é banco de dados nem mecanismo seguro de autenticação. Não utilize esta implementação para armazenar dados pessoais ou controlar acessos reais.
